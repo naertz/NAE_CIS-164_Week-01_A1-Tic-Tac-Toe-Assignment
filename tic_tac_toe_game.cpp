@@ -17,16 +17,36 @@ int getValidInput(int playerNumber);
 // ===============================================================================================================
 
 int main() {
+    // Max moves in a tic tac toe game
     const int MAX_MOVES = 9;
 
+    // Board spots
     char board[] = { ' ', ' ', ' ',
                      ' ', ' ', ' ',
                      ' ', ' ', ' ' };
+    // Player symbols
     char mark[] = { 'X', 'O' };
 
+    // Selected board spot
     int move = 0;
 
+    // Booleans for potential winner outcomes
+    bool isTopRowSame           = false;
+    bool isMiddleRowSame        = false;
+    bool isBottomRowSame        = false;
+    bool isLeftColumnSame       = false;
+    bool isMiddleColumnSame     = false;
+    bool isRightColumnSame      = false;
+    bool isDownwardDiagonalSame = false;
+    bool isUpwardDiagonalSame   = false;
+
+    // Boolean for winner outcome
+    bool doesPlayerWin          = false;
+
     for (int turn = 0; turn < MAX_MOVES; ++turn) {
+        // Get current player number.
+        int playerNumber = turn % 2;
+
         // Draw the board.
         std::cout << " " << board[0] << " | " << board[1] << " | " << board[2] << std::endl;
         std::cout << " -----------" << std::endl;
@@ -43,16 +63,105 @@ int main() {
          */
 
         // Get validated input and assign parsed integer to move.
-        move = getValidInput(turn % 2);
+        move = getValidInput(playerNumber);
 
-        if (board[move - 1] != ' ') {
+        std::cout << std::endl;
+
+        // Board array index from move
+        int moveIndex = move - 1;
+
+        // Determine if spot is taken.
+        if (board[moveIndex] != ' ') { // Player loses if spot on board is taken.
             std::cout << "Sorry but that cell is taken! You lose the game." << std::endl;
             turn = MAX_MOVES;
-        } else {
-            board[move - 1] = mark[turn % 2];
+        } else { // Spot is assigned with mark.
+            board[moveIndex] = mark[playerNumber];
+        }
+
+        /* Change 2: Added ability for game to determine a winner or tie */
+
+        // Update booleans based on selected spot.
+        if (moveIndex == 0) {
+            isTopRowSame           = board[0] == board[1] && board[0] == board[2];
+            isLeftColumnSame       = board[0] == board[3] && board[0] == board[6];
+            isDownwardDiagonalSame = board[0] == board[4] && board[0] == board[8];
+
+            if (isTopRowSame || isLeftColumnSame || isDownwardDiagonalSame) {
+                doesPlayerWin = true;
+            }
+        } else if (moveIndex == 1) {
+            isTopRowSame           = board[0] == board[1] && board[0] == board[2];
+            isMiddleColumnSame     = board[1] == board[4] && board[1] == board[7];
+
+            if (isTopRowSame || isMiddleColumnSame) {
+                doesPlayerWin = true;
+            }
+        } else if (moveIndex == 2) {
+            isTopRowSame           = board[0] == board[1] && board[0] == board[2];
+            isRightColumnSame      = board[2] == board[5] && board[2] == board[8];
+            isUpwardDiagonalSame   = board[6] == board[4] && board[6] == board[2];
+
+            if (isTopRowSame || isRightColumnSame || isUpwardDiagonalSame) {
+                doesPlayerWin = true;
+            }
+        } else if (moveIndex == 3) {
+            isMiddleRowSame        = board[3] == board[4] && board[3] == board[5];
+            isLeftColumnSame       = board[0] == board[3] && board[0] == board[6];
+
+            if (isMiddleRowSame || isLeftColumnSame) {
+                doesPlayerWin = true;
+            }
+        } else if (moveIndex == 4) {
+            isMiddleRowSame        = board[3] == board[4] && board[3] == board[5];
+            isMiddleColumnSame     = board[1] == board[4] && board[1] == board[7];
+            isDownwardDiagonalSame = board[0] == board[4] && board[0] == board[8];
+            isUpwardDiagonalSame   = board[6] == board[4] && board[6] == board[2];
+
+            if (isMiddleRowSame || isMiddleColumnSame || isDownwardDiagonalSame || isUpwardDiagonalSame) {
+                doesPlayerWin = true;
+            }
+        } else if (moveIndex == 5) {
+            isMiddleRowSame        = board[3] == board[4] && board[3] == board[5];
+            isRightColumnSame      = board[2] == board[5] && board[2] == board[8];
+
+            if (isMiddleRowSame || isRightColumnSame) {
+                doesPlayerWin = true;
+            }
+        } else if (moveIndex == 6) {
+            isBottomRowSame        = board[6] == board[7] && board[6] == board[8];
+            isLeftColumnSame       = board[0] == board[3] && board[0] == board[6];
+            isUpwardDiagonalSame   = board[6] == board[4] && board[6] == board[2];
+
+            if (isBottomRowSame || isLeftColumnSame || isUpwardDiagonalSame) {
+                doesPlayerWin = true;
+            }
+        } else if (moveIndex == 7) {
+            isBottomRowSame        = board[6] == board[7] && board[6] == board[8];
+            isMiddleColumnSame     = board[1] == board[4] && board[1] == board[7];
+
+            if (isBottomRowSame || isMiddleColumnSame) {
+                doesPlayerWin = true;
+            }
+        } else if (moveIndex == 8) {
+            isBottomRowSame        = board[6] == board[7] && board[6] == board[8];
+            isRightColumnSame      = board[2] == board[5] && board[2] == board[8];
+            isDownwardDiagonalSame = board[0] == board[4] && board[0] == board[8];
+
+            if (isBottomRowSame || isRightColumnSame || isDownwardDiagonalSame) {
+                doesPlayerWin = true;
+            }
+        }
+
+        // Determine if game is won.
+        if (doesPlayerWin) { // Winner exists
+            std::cout << "Player " << playerNumber << " wins!" << std::endl;
+            turn = MAX_MOVES;
+        } else if (turn == MAX_MOVES - 1) { // Tie
+            std::cout << "Tie!" << std::endl;
         }
     }
 
+    // End game.
     std::cout << "Game Over." << std::endl;
     return 0;
 }
