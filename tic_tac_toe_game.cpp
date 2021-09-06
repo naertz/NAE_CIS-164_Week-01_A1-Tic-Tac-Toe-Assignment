@@ -192,9 +192,9 @@ stringToIntegerError stringToIntegerValidation (int &parsedInteger, const char *
         errorResult = OVERFLOW;
     } else if ((errno == ERANGE && longToParse == LONG_MIN) || longToParse < INT_MIN) { // Determine if errno is out of range AND long returns LONG_MIN (the minimum value of a long) OR long exceeds INT_MIN (the minimum value of an integer). Upon error, long returns 0.
         errorResult = UNDERFLOW;
-    } else if (*stringInputPointer == '\0' || *end != '\0') { // Determine if byte string or character pointer of last pointer returns null. Prevents output such as "5g".
+    } else if (*stringInputPointer == '\0' || *end != '\0') { // Determine if byte string or character pointer of last pointer returns null. Prevents input such as "5g".
         errorResult = INCONVERTIBLE;
-    } else { // Output is a valid integer.
+    } else { // Input is a valid integer.
         errorResult = SUCCESS;
         // Cast valid long to integer.
         parsedInteger = static_cast<int>(longToParse);
@@ -258,7 +258,7 @@ int getValidInput(int playerNumber) {
         integerFromString = validateInput(stringInput);
 
         // Determine if parsed integer is valid.
-        if (integerFromString == INVALID) {
+        if (integerFromString == INVALID || stringInput.length() > 1) { // Second condition prevents input such as " 6".
             std::cout << "Invalid input. Please enter an integer." << std::endl;
         } else if (integerFromString == TOO_LOW) {
             std::cout << "Input is too low. Please enter an integer greater than or equal to 1." << std::endl;
